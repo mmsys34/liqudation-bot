@@ -193,41 +193,40 @@ async function main() {
 
   // do liquidation
   console.log(unhealthyPositions);
-  // const liquidator = new Wallet(config.liquidator_key, provider);
-  // for (const position of unhealthyPositions) {
-  //   const marketInfo = marketInfos.find(
-  //     (marketInfo) => marketInfo.id == position.market
-  //   );
+  const liquidator = new Wallet(config.liquidator_key, provider);
+  for (const position of unhealthyPositions) {
+    const marketInfo = marketInfos.find(
+      (marketInfo) => marketInfo.id == position.market
+    );
 
-  //   // check balance
-  //   const borrowToken = new Contract(marketInfo.info[2], ERC20Abi, provider);
-  //   const borrowBalance = await borrowToken.balanceOf(liquidator.address);
-  //   if (borrowBalance.gte(position.borrowedAmount)) {
-  //     const liquidateTx = await marketContract.connect(liquidator).liquidate(
-  //       // market params
-  //       {
-  //         isPremiumMarket: marketInfo.info[0],
-  //         loanToken: marketInfo.info[1],
-  //         collateralToken: marketInfo.info[2],
-  //         oracle: marketInfo.info[3],
-  //         irm: marketInfo.info[4],
-  //         lltv: marketInfo.info[5],
-  //         creditAttestationService: marketInfo.info[6],
-  //         irxMaxLltv: marketInfo.info[7],
-  //         categoryLltv: marketInfo.info[8],
-  //       },
-  //       position.user,
-  //       0,
-  //       position.borrow_share,
-  //       "0x"
-  //     );
-  //     console.log(liquidateTx.hash);
-  //     await liquidateTx.wait();
+    // check balance
+    const borrowToken = new Contract(marketInfo.info[2], ERC20Abi, provider);
+    const borrowBalance = await borrowToken.balanceOf(liquidator.address);
+    if (borrowBalance.gte(position.borrowedAmount)) {
+      const liquidateTx = await marketContract.connect(liquidator).liquidate(
+        // market params
+        {
+          isPremiumMarket: marketInfo.info[0],
+          loanToken: marketInfo.info[1],
+          collateralToken: marketInfo.info[2],
+          oracle: marketInfo.info[3],
+          irm: marketInfo.info[4],
+          lltv: marketInfo.info[5],
+          creditAttestationService: marketInfo.info[6],
+          irxMaxLltv: marketInfo.info[7],
+          categoryLltv: marketInfo.info[8],
+        },
+        position.user,
+        0,
+        position.borrow_share,
+        "0x"
+      );
+      await liquidateTx.wait();
 
-  //     // delay 2 sec
-  //     await delay(2);
-  //   }
-  // }
+      // delay 2 sec
+      await delay(2);
+    }
+  }
 }
 
 main()
