@@ -1,12 +1,15 @@
-### More Liquidation Bot
+# More Liquidation Bot
 
-# Requirements
+#### Requirements
 
 - [Node.js](https://nodejs.org/en) v18 or later
+- Liquidate execute address should have sufficient WFLOW or ankr.FLOW
 
-# How To Run Bot
+#### How To Run Bot
 
 - Create `config.json` and add values
+
+* Note: Please set the liquidate executor's private key correctly
 
 ```
 {
