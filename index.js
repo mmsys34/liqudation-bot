@@ -203,6 +203,22 @@ async function main() {
     const borrowToken = new Contract(marketInfo.info[2], ERC20Abi, provider);
     const borrowBalance = await borrowToken.balanceOf(liquidator.address);
     if (borrowBalance.gte(position.borrowedAmount)) {
+      // check approve first
+      const borrowAllowance = await borrowBalance.allowance(
+        liquidator.address,
+        config.contracts.markets
+      );
+      // approve if required
+      if (borrowAllowance.lt(borrowBalance)) {
+        const approveTx = await borrowToken
+          .connect(liquidator)
+          .approve(config.contracts.markets, constants.MaxUint256);
+        await approveTx.wait();
+
+        // delay 2 sec
+        await delay(2);
+      }
+
       const liquidateTx = await marketContract.connect(liquidator).liquidate(
         // market params
         {
